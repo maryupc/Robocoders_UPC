@@ -6,15 +6,16 @@ package Robocoders;
 
 /**
  *
- * @author maryx
+ * @author llucc
  */
-public abstract class Estat {
-    Robocoders r;
-    RobotInfo inf;
-    abstract void torn();
-    abstract void onScannedRobot();
-    void onCreate(Robocoders robo, RobotInfo info){
-        r = robo;
-        inf = info;
+public class Estat1 extends Estat {
+    @Override
+     void torn(){
+        r.ahead(0);
+    }
+    
+    @Override
+     void onScannedRobot(){
+        
     }
 }

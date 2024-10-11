@@ -22,9 +22,11 @@ import robocode.TeamRobot;
 
 public class Robocoders extends TeamRobot {
     private Estat estat;
+    RobotInfo info;
     @Override
     public void run(){
         while(true){
+           setEstat();
            estat.torn();
            execute();
         }
@@ -37,7 +39,12 @@ public class Robocoders extends TeamRobot {
     public void setEstat(){
         if (estat == null){
             estat = new Estat0();
-            estat.onCreate(this);
+            estat.onCreate(this, info);
+        }
+        if (estat.inf.terminado){
+            estat = new Estat1();
+            info.terminado = false;
+            estat.onCreate(this, info);
         }
     }
  
