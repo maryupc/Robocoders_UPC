@@ -4,6 +4,7 @@
  */
 package Robocoders;
 import robocode.*;
+import static robocode.util.Utils.normalRelativeAngleDegrees;
 /**
  *
  * @author llucc
@@ -11,11 +12,16 @@ import robocode.*;
 public class Estat1 extends Estat {
     @Override
      void torn(){
-
-     }
-    
-    @Override
-     void onScannedRobot(ScannedRobotEvent e){
+         Double angle = Math.atan2(inf.y, inf.x);
+         int anglegrados = (int)Math.toDegrees(angle);
+         System.out.print(anglegrados);
+        r.setTurnRight(normalRelativeAngleDegrees(anglegrados - r.getHeading()));
         
+    }
+    
+
+    @Override
+    void onScannedRobot(ScannedRobotEvent e) {
+        r.setFire(1);
     }
 }
