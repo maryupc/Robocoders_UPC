@@ -9,7 +9,10 @@ package Robocoders;
  * @author maryx
  */
 public abstract class Estat {
-    private Robocoders r;
+    Robocoders r;
     abstract void torn();
     abstract void onScannedRobot();
+    void onCreate(Robocoders robo){
+        r = robo;
+    }
 }

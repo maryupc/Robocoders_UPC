@@ -35,8 +35,10 @@ public class Robocoders extends TeamRobot {
     }
     
     public void setEstat(){
-        
+        if (estat == null){
+            estat = new Estat0();
+            estat.onCreate(this);
+        }
     }
-  //////  
-    
+ 
 }

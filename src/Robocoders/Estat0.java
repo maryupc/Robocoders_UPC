@@ -8,6 +8,14 @@ package Robocoders;
  *
  * @author maryx
  */
-public abstract class Estat0 extends Estat {
+public class Estat0 extends Estat {
+    @Override
+     void torn(){
+        r.ahead(0);
+    }
     
+    @Override
+     void onScannedRobot(){
+        
+    }
 }
