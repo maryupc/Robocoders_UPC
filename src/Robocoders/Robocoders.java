@@ -19,23 +19,23 @@ import robocode.TeamRobot;
  *
  * @author maryx
  */
+
 public class Robocoders extends TeamRobot {
+    private Estat estat;
     @Override
     public void run(){
         while(true){
-            this.setAhead(100);
-            this.setTurnRight(90);
-            execute();
+           estat.torn();
+           execute();
         }
     }
     @Override
     public void onScannedRobot(ScannedRobotEvent event){
-        fire(Rules.MIN_BULLET_POWER); //En eventos no hay que poner decisions, solo tomar nota y siempre hacerlo en el run
-        try {
-            this.broadcastMessage("VISTO!" + event.getName());
-        } catch (IOException ex) {
-            Logger.getLogger(Robocoders.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        estat.onScannedRobot();
+    }
+    
+    public void setEstat(){
+        
     }
   //////  
     
