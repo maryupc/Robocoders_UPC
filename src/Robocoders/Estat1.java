@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Robocoders;
-
+import robocode.*;
 /**
  *
  * @author llucc
@@ -11,11 +11,11 @@ package Robocoders;
 public class Estat1 extends Estat {
     @Override
      void torn(){
-        r.ahead(0);
-    }
+
+     }
     
     @Override
-     void onScannedRobot(){
+     void onScannedRobot(ScannedRobotEvent e){
         
     }
 }

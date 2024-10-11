@@ -9,7 +9,7 @@ package Robocoders;
  * @author llucc
  */
 public class RobotInfo {
-    double x;
-    double y;
+    double x = -1;
+    double y = -1;
     boolean terminado = false;
 }

@@ -8,21 +8,17 @@ import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import robocode.AdvancedRobot;
-import robocode.MessageEvent;
-import robocode.Robot;
-import robocode.Rules;
-import robocode.ScannedRobotEvent;
-import robocode.TeamRobot;
+import robocode.*;
 
 /**
  *
  * @author maryx
  */
 
-public class Robocoders extends TeamRobot {
+public class Robocoders extends AdvancedRobot {
     private Estat estat;
-    RobotInfo info;
+    RobotInfo info = new RobotInfo();
+    
     @Override
     public void run(){
         while(true){
@@ -33,7 +29,7 @@ public class Robocoders extends TeamRobot {
     }
     @Override
     public void onScannedRobot(ScannedRobotEvent event){
-        estat.onScannedRobot();
+        estat.onScannedRobot(event);
     }
     
     public void setEstat(){
@@ -41,9 +37,8 @@ public class Robocoders extends TeamRobot {
             estat = new Estat0();
             estat.onCreate(this, info);
         }
-        if (estat.inf.terminado){
+        if (estat.inf.x != -1){
             estat = new Estat1();
-            info.terminado = false;
             estat.onCreate(this, info);
         }
     }
