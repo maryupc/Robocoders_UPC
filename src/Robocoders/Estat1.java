@@ -16,20 +16,19 @@ public class Estat1 extends Estat {
 
     private boolean hihaRobot = false;
     private double direccio = Math.PI;
-    private double posEnemicX;
-    private double posEnemicY;
-    private double distEnemic;
+    private double a;
+    private ScannedRobotEvent closestEnemy;
 
     @Override
     void torn() {
-        r.setAdjustGunForRobotTurn(true);
-        r.setAdjustRadarForGunTurn(true);
-        r.setAdjustRadarForRobotTurn(true);
+        //r.setAdjustGunForRobotTurn(true);
+        //r.setAdjustRadarForGunTurn(true);
+        //r.setAdjustRadarForRobotTurn(true);
         
         goTo(inf.x, inf.y);
         girarRadarITorre();
         if (hihaRobot) {
-            esquiva(posEnemicX, posEnemicY, distEnemic);
+            esquiva();
             hihaRobot = false;
         }
 
@@ -47,15 +46,14 @@ public class Estat1 extends Estat {
     void onScannedRobot(ScannedRobotEvent e) {
         hihaRobot = true;
         // calcular posEnemic
-        posEnemicX = r.getX() + (sin(r.getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
-        posEnemicY = r.getY() + (cos(r.getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
-        distEnemic = e.getDistance();
+        if(e.getDistance() < closestEnemy.getDistance() && e.getBearing() < 45 && e.getBearing() > -45){
+            closestEnemy = e;
+        }
     }
 
     private void goTo(double x, double y) {
         //Codio sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
         //r.setAdjustRadarFor
-        double a;
         r.setTurnRightRadians(Math.tan(
                 a = Math.atan2(x -= r.getX(), y -= r.getY())
                 - r.getHeadingRadians()));
@@ -64,13 +62,25 @@ public class Estat1 extends Estat {
         if (Math.cos(a) > 0) direccio = 0;
     }
 
-    private void esquiva(double x, double y, double dist) {
+    private void esquiva() {
+        ScannedRobotEvent e = closestEnemy;
+        double eX = r.getX() + (sin(r.getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
+        double eY = r.getY() + (cos(r.getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
         
+        if (e.getBearing()<0){
+            r.setTurnRight(10);
+        }
+        else{
+            r.setTurnRight(-10);
+        }
     }
 
     private void girarRadarITorre() {
         r.setTurnGunRightRadians(Utils.normalRelativeAngle(r.getHeadingRadians()+direccio - r.getGunHeadingRadians()));
-        r.setTurnRadarRightRadians(Utils.normalRelativeAngle(r.getHeadingRadians()+direccio - r.getRadarHeadingRadians()));
-    
+        double angleRadar = Utils.normalRelativeAngle(r.getHeadingRadians()+direccio - r.getRadarHeadingRadians());
+        r.setTurnRadarRightRadians(angleRadar);
+        if (angleRadar == 0){
+            r.setTurnRadarRight(15);
+        }
     }
 }
