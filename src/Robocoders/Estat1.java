@@ -4,6 +4,8 @@
  */
 package Robocoders;
 import robocode.*;
+import robocode.util.Utils;
+import static robocode.util.Utils.normalRelativeAngle;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 /**
  *
@@ -12,11 +14,15 @@ import static robocode.util.Utils.normalRelativeAngleDegrees;
 public class Estat1 extends Estat {
     @Override
      void torn(){
-         Double angle = Math.atan2(inf.y, inf.x);
-         int anglegrados = (int)Math.toDegrees(angle);
-         System.out.print(anglegrados);
-        r.setTurnRight(normalRelativeAngleDegrees(anglegrados - r.getHeading()));
-        
+         //Codio sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
+         double a;
+         int x = (int) inf.x;
+         int y = (int) inf.y;
+         r.setTurnRightRadians(Math.tan(
+        a = Math.atan2(x -= (int) r.getX(), y -= (int) r.getY()) 
+              - r.getHeadingRadians()));
+         r.setAhead(Math.hypot(x, y) * Math.cos(a));
+         
     }
     
 

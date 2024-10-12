@@ -51,7 +51,7 @@ public class Estat0 extends Estat {
 
                 inf.x = corners[cornerIndex][0];
                 inf.y = corners[cornerIndex][1];
-                //System.out.print(inf.x + "+" + inf.y + "\n");
+                System.out.print(cornerNames[cornerIndex] + "+" + inf.x + "\n");
             }
         }
     }
