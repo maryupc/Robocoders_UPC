@@ -17,39 +17,57 @@ public class Estat1 extends Estat {
     private boolean hihaRobot = false;
     private double direccio = Math.PI;
     private double a;
-    private ScannedRobotEvent closestEnemy;
+    
+    private double posini = 0;
 
     @Override
     void torn() {
+
         //r.setAdjustGunForRobotTurn(true);
         //r.setAdjustRadarForGunTurn(true);
         //r.setAdjustRadarForRobotTurn(true);
-        
         goTo(inf.x, inf.y);
         girarRadarITorre();
-        if (hihaRobot) {
-            esquiva();
-            hihaRobot = false;
-        }
-
-        //Codio sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
-        /*double a;
-         int x = (int) inf.x;
-         int y = (int) inf.y;
-         r.setTurnRightRadians(Math.tan(
-        a = Math.atan2(x -= (int) r.getX(), y -= (int) r.getY()) 
-              - r.getHeadingRadians()));
-         r.setAhead(Math.hypot(x, y) * Math.cos(a));*/
+       if(inf.encontrado == true){
+            System.out.print("ENCONTRE UN ROBOT EN MI CAMINO"+  "\n");
+            if (inf.closestEnemy.getDistance() < 150)
+            {
+                
+                r.setBack(55);
+                r.setStop();
+                if (inf.closestEnemy.getBearing() > 0) {
+                    r.setTurnLeft(Utils.normalRelativeAngleDegrees(90 + (r.getGunHeading()- r.getRadarHeading())));  // Si el enemigo está a la derecha, gira a la derecha
+                } else {
+                    r.setTurnRight(Utils.normalRelativeAngleDegrees(90 + (r.getGunHeading()- r.getRadarHeading()))); 
+                }
+                r.setAhead(45);
+            }
+        } 
+            inf.encontrado = false;
+            if(inf.encontrado == false){
+                System.out.print("NO ENCONTRE UN ROBOT EN MI CAMINO"+  "\n");
+            }
+           
     }
 
     @Override
     void onScannedRobot(ScannedRobotEvent e) {
-        hihaRobot = true;
         // calcular posEnemic
-        if(e.getDistance() < closestEnemy.getDistance() && e.getBearing() < 45 && e.getBearing() > -45){
-            closestEnemy = e;
+        
+        if(inf.closestEnemy==null || (e.getDistance() < inf.closestEnemy.getDistance() || e.getName().equals(inf.closestEnemy.getName()) )){        
+            
+            inf.closestEnemy = e;  
+            inf.encontrado = true;
+            
+            //esquiva();
         }
+        
+        /*if(e.getDistance() < closestEnemy.getDistance() || e.getBearing() < 45 && e.getBearing() > -45){
+                closestEnemy = e;
+            }*/
+
     }
+
 
     private void goTo(double x, double y) {
         //Codio sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
@@ -58,29 +76,39 @@ public class Estat1 extends Estat {
                 a = Math.atan2(x -= r.getX(), y -= r.getY())
                 - r.getHeadingRadians()));
         //r.setTurnRadarRightRadians(Math.tan(a));
+        
         r.setAhead(Math.hypot(x, y) * Math.cos(a));
         if (Math.cos(a) > 0) direccio = 0;
     }
 
     private void esquiva() {
-        ScannedRobotEvent e = closestEnemy;
-        double eX = r.getX() + (sin(r.getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
+        
+        ScannedRobotEvent e = inf.closestEnemy;
+        
+        r.stop();
+        
+        r.setFire(1);
+        //r.setBack(e.getDistance());
+        r.setTurnRight(Math.abs(90));
+        
+        //r.setResume();
+        
+        
+       /* double eX = r.getX() + (sin(r.getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
         double eY = r.getY() + (cos(r.getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
         
-        if (e.getBearing()<0){
-            r.setTurnRight(10);
-        }
-        else{
-            r.setTurnRight(-10);
-        }
+
+        }*/
     }
 
     private void girarRadarITorre() {
+        
         r.setTurnGunRightRadians(Utils.normalRelativeAngle(r.getHeadingRadians()+direccio - r.getGunHeadingRadians()));
         double angleRadar = Utils.normalRelativeAngle(r.getHeadingRadians()+direccio - r.getRadarHeadingRadians());
         r.setTurnRadarRightRadians(angleRadar);
         if (angleRadar == 0){
-            r.setTurnRadarRight(15);
-        }
+            r.setTurnRadarRight(10);
+        }else r.setTurnRadarRight(-10);
+        //hihaRobot = true;
     }
 }
