@@ -50,6 +50,11 @@ public class Robocoders extends AdvancedRobot {
             estat = new Estat1();
             estat.onCreate(this, info);
         }
+        
+        if(estat.inf.terminado == true){
+            estat = new Estat2();
+            estat.onCreate(this, info);
+        }
     }
 
 }
