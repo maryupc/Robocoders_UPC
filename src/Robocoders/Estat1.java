@@ -14,7 +14,7 @@ import robocode.util.Utils;
  */
 public class Estat1 extends Estat {
 
-    private boolean hihaRobot = false;
+    private boolean girRadar = false;
     private double direccio = Math.PI;
     private double a;
     
@@ -22,25 +22,20 @@ public class Estat1 extends Estat {
 
     @Override
     void torn() {
-
-        //r.setAdjustGunForRobotTurn(true);
-        //r.setAdjustRadarForGunTurn(true);
-        //r.setAdjustRadarForRobotTurn(true);
         goTo(inf.x, inf.y);
         girarRadarITorre();
        if(inf.encontrado == true){
             System.out.print("ENCONTRE UN ROBOT EN MI CAMINO"+  "\n");
             if (inf.closestEnemy.getDistance() < 150)
             {
-                
-                r.setBack(55);
-                r.setStop();
+                r.back(55);
+                r.stop();
                 if (inf.closestEnemy.getBearing() > 0) {
-                    r.setTurnLeft(Utils.normalRelativeAngleDegrees(90 + (r.getGunHeading()- r.getRadarHeading())));  // Si el enemigo está a la derecha, gira a la derecha
+                    r.turnLeft(Utils.normalRelativeAngleDegrees(90 + (r.getGunHeading()- r.getRadarHeading())));  // Si el enemigo está a la derecha, gira a la izquierda
                 } else {
-                    r.setTurnRight(Utils.normalRelativeAngleDegrees(90 + (r.getGunHeading()- r.getRadarHeading()))); 
+                    r.turnRight(Utils.normalRelativeAngleDegrees(90 + (r.getGunHeading()- r.getRadarHeading()))); 
                 }
-                r.setAhead(45);
+                r.ahead(45);
             }
         } 
             inf.encontrado = false;
@@ -52,20 +47,11 @@ public class Estat1 extends Estat {
 
     @Override
     void onScannedRobot(ScannedRobotEvent e) {
-        // calcular posEnemic
-        
         if(inf.closestEnemy==null || (e.getDistance() < inf.closestEnemy.getDistance() || e.getName().equals(inf.closestEnemy.getName()) )){        
-            
             inf.closestEnemy = e;  
             inf.encontrado = true;
-            
-            //esquiva();
         }
         
-        /*if(e.getDistance() < closestEnemy.getDistance() || e.getBearing() < 45 && e.getBearing() > -45){
-                closestEnemy = e;
-            }*/
-
     }
 
 
@@ -77,14 +63,14 @@ public class Estat1 extends Estat {
                 - r.getHeadingRadians()));
         //r.setTurnRadarRightRadians(Math.tan(a));
         
-        r.setAhead(Math.hypot(x, y) * Math.cos(a));
+        //if(inf.encontrado == false || ( inf.closestEnemy!=null && inf.closestEnemy.getDistance() > 100) )
+            r.setAhead(Math.hypot(x, y) * Math.cos(a));
+       // else r.setBack(10);
         if (Math.cos(a) > 0) direccio = 0;
     }
 
     private void esquiva() {
-        
-        ScannedRobotEvent e = inf.closestEnemy;
-        
+                
         r.stop();
         
         r.setFire(1);
@@ -106,9 +92,29 @@ public class Estat1 extends Estat {
         r.setTurnGunRightRadians(Utils.normalRelativeAngle(r.getHeadingRadians()+direccio - r.getGunHeadingRadians()));
         double angleRadar = Utils.normalRelativeAngle(r.getHeadingRadians()+direccio - r.getRadarHeadingRadians());
         r.setTurnRadarRightRadians(angleRadar);
-        if (angleRadar == 0){
-            r.setTurnRadarRight(10);
-        }else r.setTurnRadarRight(-10);
-        //hihaRobot = true;
+        if (angleRadar <= 0){
+            if(girRadar){
+                r.setTurnRadarRight(10);
+                girRadar = false;
+            }else{
+                girRadar = true;
+            } r.setTurnRadarRight(-10);
+            
+        }
     }
+
+    @Override
+    void onHitRobot(HitRobotEvent e) {
+        //r.setStop();
+        double absoluteBearing = r.getHeading() + e.getBearing();
+	double bearingFromGun = Utils.normalRelativeAngleDegrees(absoluteBearing - r.getGunHeading());
+        //double gunTurnAmt = Utils.normalRelativeAngle(e.getBearing() + (r.getHeading() - r.getRadarHeading()));
+        r.setTurnGunRight(bearingFromGun);
+        r.back(50);
+	r.fire(3);
+        r.stop();
+        return;
+    }
+    
+
 }

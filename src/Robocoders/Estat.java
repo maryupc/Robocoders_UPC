@@ -13,6 +13,7 @@ public abstract class Estat {
     RobotInfo inf;
     abstract void torn();
     abstract void onScannedRobot(ScannedRobotEvent e);
+    abstract void onHitRobot(HitRobotEvent e);
     void onCreate(Robocoders robo, RobotInfo info){
         r = robo;
         inf = info;

@@ -84,4 +84,9 @@ public class Estat0 extends Estat {
         String[] cornerNames = {"Bottom-left", "Bottom-right", "Top-left", "Top-right"};
         System.out.print(cornerNames[cornerIndex] + "+" + inf.x + "\n");
     }
+
+    @Override
+    void onHitRobot(HitRobotEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
