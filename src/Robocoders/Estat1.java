@@ -32,6 +32,11 @@ public class Estat1 extends Estat {
            //r.stop();
             inf.terminado = true;
             inf.closestEnemy = null;
+            //r.turnGunRight(90);
+            r.setAdjustRadarForGunTurn(false);
+            r.turnGunRightRadians(Utils.normalRelativeAngle(r.getGunHeadingRadians() + direccio - r.getHeadingRadians()));
+            //r.turnRadarRightRadians(Utils.normalRelativeAngle(r.getRadarHeadingRadians() + direccio - r.getHeadingRadians() ));
+            
 
         }
            
