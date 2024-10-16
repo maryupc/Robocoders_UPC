@@ -29,15 +29,8 @@ public class Estat1 extends Estat {
         }
         if(r.getX() == inf.x && r.getY() == inf.y){
             System.out.print("LLEGUE AL DESTINO"+  "\n");
-           //r.stop();
             inf.terminado = true;
             inf.closestEnemy = null;
-            //r.turnGunRight(90);
-            r.setAdjustRadarForGunTurn(false);
-            r.turnGunRightRadians(Utils.normalRelativeAngle(r.getGunHeadingRadians() + direccio - r.getHeadingRadians()));
-            //r.turnRadarRightRadians(Utils.normalRelativeAngle(r.getRadarHeadingRadians() + direccio - r.getHeadingRadians() ));
-            
-
         }
            
     }
@@ -52,9 +45,8 @@ public class Estat1 extends Estat {
         
     }
 
-
     private void goTo(double x, double y) {
-        //Codio sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
+        //Codigo sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
 
         r.setTurnRightRadians(Math.tan(
                 a = Math.atan2(x -= r.getX(), y -= r.getY())
@@ -106,6 +98,11 @@ public class Estat1 extends Estat {
       //  r.setTurnGunRight(bearingFromGun);
         
 //	r.setFire(3);
+    }
+
+    @Override
+    void onRobotDeath(RobotDeathEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 

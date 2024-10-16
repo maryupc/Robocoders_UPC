@@ -14,6 +14,7 @@ public abstract class Estat {
     abstract void torn();
     abstract void onScannedRobot(ScannedRobotEvent e);
     abstract void onHitRobot(HitRobotEvent e);
+    abstract void onRobotDeath(RobotDeathEvent e);
     void onCreate(Robocoders robo, RobotInfo info){
         r = robo;
         inf = info;

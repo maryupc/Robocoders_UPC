@@ -18,7 +18,6 @@ import robocode.*;
 public class Robocoders extends AdvancedRobot {
 
     private Estat estat;
-    private int wallMargin = 20;
     RobotInfo info = new RobotInfo();
 
     @Override
@@ -38,6 +37,12 @@ public class Robocoders extends AdvancedRobot {
     @Override
     public void onHitRobot(HitRobotEvent event){
         estat.onHitRobot(event);
+    }
+    
+    @Override
+    public void onRobotDeath(RobotDeathEvent event){
+        estat.onRobotDeath(event);
+    
     }
     
 

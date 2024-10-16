@@ -5,6 +5,7 @@
 package Robocoders;
 
 import robocode.HitRobotEvent;
+import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 import static robocode.util.Utils.normalRelativeAngle;
@@ -17,27 +18,28 @@ import static robocode.util.Utils.normalRelativeAngleDegrees;
 
 public class Estat2 extends Estat {
     
-    int fase = 0;
-     int gunIncrement = 3;
     @Override
     void torn() {
-        r.turnGunRight(10);
-        
+        r.setAdjustRadarForGunTurn(true);  // El radar puede girar independientemente del cañón
+        r.setAdjustGunForRobotTurn(true);
+        r.setTurnRadarRight(360);
+        dispara();
     }
 
     @Override
     void onScannedRobot(ScannedRobotEvent e) {
-        double absoluteBearing = r.getHeading() + e.getBearing();
-	double bearingFromGun = normalRelativeAngleDegrees(absoluteBearing - r.getGunHeading());
-        r.turnGunRight(bearingFromGun);
-        r.stop();
-        smartFire(e.getDistance());
-       // r.scan();
-        r.resume();
+
+       if (inf.closestEnemy == null || e.getName().equals(inf.closestEnemy.getName())) {
+            inf.closestEnemy = e ;
+            double anguloEnemigo = r.getHeading() + e.getBearing();
+
+            // Apuntamos con el cañon hacia el enemigo
+           double anguloCañon = anguloEnemigo - r.getGunHeading();
+           r.setTurnGunRight(normalRelativeAngleDegrees(anguloCañon));
+	}
 
     }
     
-
     @Override
     void onHitRobot(HitRobotEvent e) {
 
@@ -53,16 +55,28 @@ public class Estat2 extends Estat {
 		}
 	}
     
-    private void disparo(){
+    private void dispara(){
         if (inf.closestEnemy == null) return;
-        //
-        //gunTurnAmt = (r.getHeading() - r.getRadarHeading() + e.getBearing());
+        double max = Math.max(r.getBattleFieldHeight(), r.getBattleFieldWidth());
 
-        //Ejemplar de codigo sacado de la funcion de smartFire de robot Corners
+        if (Math.abs(r.getTurnRemaining()) < 10) {
+            //Si estamos cerca del enemigo, disparar con maxima potenica, sino disparamos con menor potencia 
+            if (inf.closestEnemy.getDistance() < max / 3) {
+                r.setFire(3);
+            } else {
+                r.setFire(1);
+            }
+        }
 
-       // r.setTurnRadarRight(r.getHeading() - r.getRadarHeading() + inf.closestEnemy.getBearing());
-        
+    }
 
+    //Si muere el enemigo al que estabamos disparando, reseteamos la info. 
+    @Override
+    void onRobotDeath(RobotDeathEvent e) {
+        if(e.getName().equals(inf.closestEnemy.getName())){
+            System.out.print("DEATH"+  "\n");
+            inf.closestEnemy = null;
+        }
     }
     
     

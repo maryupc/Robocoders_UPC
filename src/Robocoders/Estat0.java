@@ -4,6 +4,7 @@
  */
 package Robocoders;
 
+import java.awt.Color;
 import java.util.*;
 import static java.lang.Math.*;
 import robocode.*;
@@ -20,6 +21,11 @@ public class Estat0 extends Estat {
 
     @Override
     void torn() {
+        r.setBodyColor(Color.pink);
+        r.setGunColor(Color.pink);
+        r.setRadarColor(Color.pink);
+        r.setScanColor(Color.pink);
+        r.setBulletColor(Color.pink);
         switch (fase) {
             case 0 -> {
                 ticks++;
@@ -87,6 +93,11 @@ public class Estat0 extends Estat {
 
     @Override
     void onHitRobot(HitRobotEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    void onRobotDeath(RobotDeathEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
