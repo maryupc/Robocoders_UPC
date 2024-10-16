@@ -94,13 +94,13 @@ public class Estat1 extends Estat {
 
     @Override
     void onHitRobot(HitRobotEvent e) {        
-        r.back(40);
-        
+        r.setBack(40);
+        r.turnRight(90);
         double absoluteBearing = r.getHeading() + e.getBearing();
 	double bearingFromGun = Utils.normalRelativeAngleDegrees(absoluteBearing - r.getGunHeading());
-        r.setTurnGunRight(bearingFromGun);
+      //  r.setTurnGunRight(bearingFromGun);
         
-	r.setFire(3);
+//	r.setFire(3);
     }
     
 

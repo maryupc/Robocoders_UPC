@@ -58,10 +58,10 @@ public class Estat2 extends Estat {
 			// We check gun heat here, because calling fire()
 			// uses a turn, which could cause us to lose track
 			// of the other robot.
-			if (r.getGunHeat() == 0) {
+			//if (r.getGunHeat() == 0) {
 				r.setFire(Math.min(3 - Math.abs(bearingFromGun), r.getEnergy() - .1));
-			}
-                        r.setTurnRadarRight(r.getHeading() - r.getRadarHeading() + e.getBearing());
+		//	}
+                      //  r.setTurnRadarRight(r.getHeading() - r.getRadarHeading() + e.getBearing());
 
 		//} // otherwise just set the gun to turn.
 		// Note:  This will have no effect until we call scan()
@@ -71,9 +71,9 @@ public class Estat2 extends Estat {
 		// Generates another scan event if we see a robot.
 		// We only need to call this if the gun (and therefore radar)
 		// are not turning.  Otherwise, scan is called automatically.
-		if (bearingFromGun == 0) {
-			r.scan();
-		}
+		//if (bearingFromGun == 0) {
+	//		r.scan();
+	//	}
 
     }
     
