@@ -12,4 +12,5 @@ public class TeamInfo {
     List<String> teamates = new ArrayList();
     List<Integer> teamPos = new ArrayList();
     int pos;
+    String follow;
 }
