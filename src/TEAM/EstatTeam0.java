@@ -31,7 +31,9 @@ public class EstatTeam0 extends EstatTeam {
                 r.setTurnRadarRight(360);
                 String[] team;
                 try {
-                    r.broadcastMessage(new Message(r.getName(), randomValue));
+                    Message m = new Message(r.getName(), "SetLeader");
+                    m.setInt(randomValue);
+                    r.broadcastMessage(m);
                     fase = 1;
                 } catch (IOException ex) {
                     Logger.getLogger(EstatTeam0.class.getName()).log(Level.SEVERE, null, ex);
@@ -45,8 +47,8 @@ public class EstatTeam0 extends EstatTeam {
             case 2 -> {
                 int maxRand = 0;
                 for (Message m : ms) {
-                    if (m.random < maxRand) {
-                        maxRand = m.random;
+                    if (m.num < maxRand) {
+                        maxRand = m.num;
                     }
                 }
                 ms.clear(); // Borrem tots els missatges
@@ -58,11 +60,13 @@ public class EstatTeam0 extends EstatTeam {
                     fase = 4;
                 }
             }
-            case 3 -> { // Busquem el robot aliat que tinguis mes aprop i li diem quin numero es
+            case 3 -> { // Busquem el robot aliat que tinguis mes aprop i li enviem la seva posicio en la jerarquia
                 if (r.getRadarTurnRemaining() == 0) {
                     try {
-                        Message m = new Message(r.getName(), inf.pos + 1);
+                        Message m = new Message(r.getName(), "SetPositions");
+                        m.setInt(inf.pos+1);
                         m.setReceiver(getClosestTeammate());
+                        inf.sendCoords = m.receiver;
                         if(!m.receiver.equals("")){
                             r.broadcastMessage(m);
                         }
@@ -75,13 +79,15 @@ public class EstatTeam0 extends EstatTeam {
             case 4 -> {
                 for (Message m: ms){
                     if(m.receiver.equals(r.getName())){
-                        inf.pos = m.random;
+                        inf.pos = m.num;
+                        inf.follow = m.sender;
                         fase = 3;
                     }
                 }
             }
             case 5 -> {
-                System.out.print(inf.pos+"\n");
+                inf.estat0Acabat = true;
+                System.out.println(inf.pos+"->Follow:"+inf.follow+"->send:"+inf.sendCoords);
             }
         }
     }
@@ -95,11 +101,11 @@ public class EstatTeam0 extends EstatTeam {
     void onMessageReceived(MessageEvent e) {
         if (e.getMessage() instanceof Message) {
             ms.add((Message) e.getMessage());
-            System.out.print(e.getSender() + ":" + ms.get(ms.size() - 1).random + "\n");
+            //System.out.print(e.getSender() + ":" + ms.get(ms.size() - 1).num + "\n");
         }
     }
 
-    String getClosestTeammate() {
+    String getClosestTeammate() { //Obtenim el teammate mes aprop que encara no estigui dins la jerarquia
         String rob = "";
         double distance = 10000;
         for (ScannedRobotEvent e : robots) {

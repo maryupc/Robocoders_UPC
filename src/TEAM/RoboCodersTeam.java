@@ -38,9 +38,15 @@ public class RoboCodersTeam extends TeamRobot{
             estat = new EstatTeam0();
             estat.onCreate(this, info);
         }
-        else if (estat.inf.pos == 1){
-            estat = new EstatLider();
+        else if (estat.inf.estat0Acabat){
+            if (estat.inf.pos == 1){
+                estat = new EstatLider();
+            }
+            else{
+                estat = new EstatBot();
+            }
             estat.onCreate(this, info);
+            estat.inf.estat0Acabat = false;
         }
     }
     

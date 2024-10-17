@@ -4,6 +4,9 @@
  */
 package TEAM;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import robocode.MessageEvent;
 import robocode.ScannedRobotEvent;
 
@@ -11,21 +14,58 @@ import robocode.ScannedRobotEvent;
  *
  * @author llucc
  */
-public class EstatBot extends EstatTeam{
+public class EstatBot extends EstatTeam {
 
     @Override
     void torn() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (inf.pos != 5) {
+            sendCoords();
+        }
+        System.out.println(goX+":"+goY);
+        if (goX != -1) {
+            // Anar a la ultima posicio coneguda del robot al que seguim
+            goTo(goX, goY);
+        }
+
+        if (eneX != -1) {
+            // Fer preparacions per disparar i disparar a la posicio de l'enemic
+        }
     }
 
     @Override
     void onScannedRobot(ScannedRobotEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // Es necessita per esquivar?
     }
 
     @Override
     void onMessageReceived(MessageEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (e.getMessage() instanceof Message) {
+            Message m = (Message) e.getMessage();
+            //System.out.println(m.sender + ":" + m.type);
+            
+            switch (m.type) {
+                case "GoTo" -> {
+                    if (m.sender.equals(inf.follow)) {
+                        System.out.println("a");
+                        goX = m.x;
+                        goY = m.y;
+                    }
+                }
+                case "ShootTo" -> {
+                    eneX = m.x;
+                    eneY = m.y;
+                }
+            }
+        }
     }
-    
+
+    void sendCoords() {
+        Message m = new Message(r.getName(), "GoTo");
+        m.setCoords(r.getX(), r.getY());
+        try {
+            r.sendMessage(inf.sendCoords, m);
+        } catch (IOException ex) {
+            Logger.getLogger(EstatBot.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

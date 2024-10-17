@@ -11,8 +11,8 @@ import java.util.*;
 public class TeamInfo {
     //List<String> teamates = new ArrayList();
     //List<Integer> teamPos = new ArrayList();
-    int pos;
-    String follow;
-    double eneX;
-    double eneY;
+    int pos; // Posicio en la jerarquia
+    String follow; // Nom del robot a qui seguir
+    String sendCoords; // Nom del robot al qual li enviem les coordenades a seguir
+    boolean estat0Acabat = false;
 }

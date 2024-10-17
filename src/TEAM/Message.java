@@ -14,14 +14,25 @@ import java.util.*;
 public class Message implements Serializable {
     String sender;
     String receiver = "";
-    int random;
+    String type;
+    int num;
+    double x, y;
     
-    public Message(String r, int ran){
+    public Message(String r, String type){
         this.sender = r;
-        this.random = ran;
+        this.type = type;
+    }
+    
+    public void setInt(int num){
+        this.num = num;
     }
     
     public void setReceiver(String r){
         receiver = r;
+    }
+    
+    public void setCoords(double x, double y){
+        this.x = x;
+        this.y = y;
     }
 }
