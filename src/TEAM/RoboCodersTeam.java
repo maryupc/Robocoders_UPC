@@ -38,6 +38,10 @@ public class RoboCodersTeam extends TeamRobot{
             estat = new EstatTeam0();
             estat.onCreate(this, info);
         }
+        else if (estat.inf.pos == 1){
+            estat = new EstatLider();
+            estat.onCreate(this, info);
+        }
     }
     
     @Override
@@ -52,7 +56,7 @@ public class RoboCodersTeam extends TeamRobot{
             double y = getY();
             
             // Draw the circle around the robot
-            double radius = 50; // Set the radius of the circle (adjust as needed)
+            double radius = 60; // Set the radius of the circle (adjust as needed)
             g.drawOval((int)(x - radius / 2), (int)(y - radius / 2), (int)radius, (int)radius);
         }
     }
