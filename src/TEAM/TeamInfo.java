@@ -4,6 +4,7 @@
  */
 package TEAM;
 import java.util.*;
+import robocode.ScannedRobotEvent;
 /**
  *
  * @author llucc
@@ -15,4 +16,6 @@ public class TeamInfo {
     String follow; // Nom del robot a qui seguir
     String sendCoords; // Nom del robot al qual li enviem les coordenades a seguir
     boolean estat0Acabat = false;
+    ScannedRobotEvent closestEnemy;
+    boolean encontrado = false;
 }

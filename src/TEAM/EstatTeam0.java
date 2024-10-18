@@ -4,6 +4,7 @@
  */
 package TEAM;
 
+import java.awt.Graphics2D;
 import java.io.IOException;
 import static java.lang.Math.*;
 import java.util.*;
@@ -127,5 +128,15 @@ public class EstatTeam0 extends EstatTeam {
     @Override
     void onRobotDeath(RobotDeathEvent event) {
         
+    }
+
+    @Override
+    void onPaint(Graphics2D g) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    void goTo(double x, double y) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

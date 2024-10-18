@@ -52,19 +52,7 @@ public class RoboCodersTeam extends TeamRobot{
     
     @Override
     public void onPaint(Graphics2D g) {
-        // Check if this robot is the leader
-        if (estat.inf.pos == 1) {
-            // Set the color for the circle
-            g.setColor(Color.YELLOW);
-            
-            // Get the robot's position
-            double x = getX();
-            double y = getY();
-            
-            // Draw the circle around the robot
-            double radius = 60; // Set the radius of the circle (adjust as needed)
-            g.drawOval((int)(x - radius / 2), (int)(y - radius / 2), (int)radius, (int)radius);
-        }
+        estat.onPaint(g);
     }
     
     @Override

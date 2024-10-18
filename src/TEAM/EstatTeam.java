@@ -4,9 +4,12 @@
  */
 package TEAM;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import robocode.*;
+import robocode.util.Utils;
 
 /**
  *
@@ -23,21 +26,19 @@ public abstract class EstatTeam {
     abstract void onScannedRobot(ScannedRobotEvent e);
     abstract void onMessageReceived(MessageEvent e);
     abstract void onRobotDeath(RobotDeathEvent event);
+    abstract void onPaint(Graphics2D g);
+    abstract void goTo(double x, double y);
+    
     void onCreate(RoboCodersTeam robo, TeamInfo info){
         r = robo;
         inf = info;
     }
-    void goTo(double x, double y) {
-        //Codigo sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
-        double a;
-        r.setTurnRightRadians(Math.tan(
-                a = Math.atan2(x -= r.getX(), y -= r.getY())
-                - r.getHeadingRadians()));
-        
-        r.setAhead(Math.hypot(x, y) * Math.cos(a));
-        //if (Math.cos(a) > 0) direccio = 0;
-    }
+    
+ 
     double distance (double x1, double y1, double x2, double y2){
-        return sqrt(pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+        double distance = Point2D.distance(x1, y1, x2, y2);
+        return distance;
     }
+
+    
 }
