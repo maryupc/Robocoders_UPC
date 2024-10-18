@@ -31,11 +31,7 @@ public class Estat2 extends Estat {
 
        if (inf.closestEnemy == null || e.getName().equals(inf.closestEnemy.getName())) {
             inf.closestEnemy = e ;
-            double anguloEnemigo = r.getHeading() + e.getBearing();
 
-            // Apuntamos con el cañon hacia el enemigo
-           double anguloCañon = anguloEnemigo - r.getGunHeading();
-           r.setTurnGunRight(normalRelativeAngleDegrees(anguloCañon));
 	}
 
     }
@@ -45,19 +41,16 @@ public class Estat2 extends Estat {
 
     }
     
-    public void smartFire(double robotDistance) {
-        if (robotDistance > 200 || r.getEnergy() < 15) {
-			r.fire(1);
-		} else if (robotDistance > 50) {
-			r.fire(2);
-		} else {
-			r.fire(3);
-		}
-	}
-    
     private void dispara(){
         if (inf.closestEnemy == null) return;
+        double anguloEnemigo = r.getHeading() + inf.closestEnemy.getBearing();
+        // Apuntamos con el cañon hacia el enemigo
+        double anguloCañon = anguloEnemigo - r.getGunHeading();
+        r.setTurnGunRight(normalRelativeAngleDegrees(anguloCañon));
         double max = Math.max(r.getBattleFieldHeight(), r.getBattleFieldWidth());
+        
+        double anguloRadar = anguloEnemigo - r.getRadarHeading();
+        r.setTurnRadarRight(normalRelativeAngleDegrees(anguloRadar)); 
 
         if (Math.abs(r.getTurnRemaining()) < 10) {
             //Si estamos cerca del enemigo, disparar con maxima potenica, sino disparamos con menor potencia 

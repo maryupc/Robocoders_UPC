@@ -59,7 +59,7 @@ public class Estat1 extends Estat {
     private void esquiva() {
         if(inf.encontrado == true){
             System.out.print("ENCONTRE UN ROBOT EN MI CAMINO"+  "\n");
-            if (inf.closestEnemy.getDistance() < 150)
+            if (inf.closestEnemy.getDistance() < 200)
             {
                 r.back(55);
                 if (inf.closestEnemy.getBearing() >= 0) {
