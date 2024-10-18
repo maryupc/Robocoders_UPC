@@ -66,4 +66,9 @@ public class RoboCodersTeam extends TeamRobot{
             g.drawOval((int)(x - radius / 2), (int)(y - radius / 2), (int)radius, (int)radius);
         }
     }
+    
+    @Override
+    public void onRobotDeath(RobotDeathEvent event){
+        estat.onRobotDeath(event);
+    }
 }

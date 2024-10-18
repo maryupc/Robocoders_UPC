@@ -4,6 +4,8 @@
  */
 package TEAM;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import robocode.*;
 
 /**
@@ -20,6 +22,7 @@ public abstract class EstatTeam {
     abstract void torn();
     abstract void onScannedRobot(ScannedRobotEvent e);
     abstract void onMessageReceived(MessageEvent e);
+    abstract void onRobotDeath(RobotDeathEvent event);
     void onCreate(RoboCodersTeam robo, TeamInfo info){
         r = robo;
         inf = info;
@@ -33,5 +36,8 @@ public abstract class EstatTeam {
         
         r.setAhead(Math.hypot(x, y) * Math.cos(a));
         //if (Math.cos(a) > 0) direccio = 0;
+    }
+    double distance (double x1, double y1, double x2, double y2){
+        return sqrt(pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 }

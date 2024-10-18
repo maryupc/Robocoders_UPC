@@ -5,8 +5,7 @@
 package TEAM;
 
 import java.io.IOException;
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
+import static java.lang.Math.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -123,5 +122,10 @@ public class EstatTeam0 extends EstatTeam {
             }
         }
         return rob;
+    }
+
+    @Override
+    void onRobotDeath(RobotDeathEvent event) {
+        
     }
 }
