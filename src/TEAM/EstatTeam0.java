@@ -46,9 +46,11 @@ public class EstatTeam0 extends EstatTeam {
             }
             case 2 -> {
                 int maxRand = 0;
+                String leader = "";
                 for (Message m : ms) {
                     if (m.num < maxRand) {
                         maxRand = m.num;
+                        leader = m.sender;
                     }
                 }
                 ms.clear(); // Borrem tots els missatges
@@ -59,15 +61,16 @@ public class EstatTeam0 extends EstatTeam {
                 } else {
                     fase = 4;
                 }
+                inf.allies.add(new MapRobot(leader));
             }
             case 3 -> { // Busquem el robot aliat que tinguis mes aprop i li enviem la seva posicio en la jerarquia
                 if (r.getRadarTurnRemaining() == 0) {
                     try {
                         Message m = new Message(r.getName(), "SetPositions");
-                        m.setInt(inf.pos+1);
+                        m.setInt(inf.pos + 1);
                         m.setReceiver(getClosestTeammate());
                         inf.sendCoords = m.receiver;
-                        if(!m.receiver.equals("")){
+                        if (!m.receiver.equals("")) {
                             r.broadcastMessage(m);
                         }
                         fase = 5;
@@ -77,17 +80,23 @@ public class EstatTeam0 extends EstatTeam {
                 }
             }
             case 4 -> {
-                for (Message m: ms){
-                    if(m.receiver.equals(r.getName())){
-                        inf.pos = m.num;
-                        inf.follow = m.sender;
-                        fase = 3;
+                for (Message m : ms) {
+                    if (m.type.equals("SetPositions")) {
+                        if (!inf.findAlly(m.receiver)){
+                            inf.allies.add(new MapRobot(m.receiver));
+                        }
+                        
+                        if (m.receiver.equals(r.getName())) {
+                            inf.pos = m.num;
+                            inf.follow = m.sender;
+                            fase = 3;
+                        }
                     }
                 }
             }
             case 5 -> {
                 inf.estat0Acabat = true;
-                System.out.println(inf.pos+"->Follow:"+inf.follow+"->send:"+inf.sendCoords);
+                System.out.println(inf.pos + "->Follow:" + inf.follow + "->send:" + inf.sendCoords);
             }
         }
     }
@@ -95,6 +104,9 @@ public class EstatTeam0 extends EstatTeam {
     @Override
     void onScannedRobot(ScannedRobotEvent e) {
         robots.add(e);
+        if(!r.isTeammate(e.getName())){
+            updateEnemy(e);
+        }
     }
 
     @Override
@@ -127,7 +139,7 @@ public class EstatTeam0 extends EstatTeam {
 
     @Override
     void onRobotDeath(RobotDeathEvent event) {
-        
+
     }
 
     @Override

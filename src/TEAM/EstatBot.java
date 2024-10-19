@@ -21,7 +21,7 @@ public class EstatBot extends EstatTeam {
 
     boolean askWhoFollow = false;
     boolean sendWhoFollow = false;
-    
+
     @Override
     void torn() {
         //r.setMaxVelocity(6);
@@ -32,14 +32,20 @@ public class EstatBot extends EstatTeam {
         //System.out.println(goX + ":" + goY);
         if (goX != -1) {
             // Anar a la ultima posicio coneguda del robot al que seguim
-            if (distance(r.getX(),r.getY(), goX, goY) > 50 ) {
+            if (distance(r.getX(), r.getY(), goX, goY) > 100) {
+                r.setMaxVelocity(7);
                 goTo(goX, goY);
             } else {
-              r.back(20);
-           }
+                r.setMaxVelocity(4);
+                if (distance(r.getX(), r.getY(), goX, goY) <50) {
+                    r.back(20);
+                }
+            }
+
         }
 
-        if (eneX != -1) {
+        if (eneX
+                != -1) {
             // Fer preparacions per disparar i disparar a la posicio de l'enemic
         }
     }
@@ -60,7 +66,6 @@ public class EstatBot extends EstatTeam {
                     if (m.sender.equals(inf.follow)) {
                         goX = m.x;
                         goY = m.y;
-                        
                     }
                 }
                 case "ShootTo" -> {
@@ -105,8 +110,10 @@ public class EstatBot extends EstatTeam {
         m.setCoords(r.getX(), r.getY());
         try {
             r.sendMessage(inf.sendCoords, m);
+
         } catch (IOException ex) {
-            Logger.getLogger(EstatBot.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EstatBot.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -119,8 +126,10 @@ public class EstatBot extends EstatTeam {
             System.out.println("SendFollow:" + r.getName() + "->" + inf.sendCoords);
             try {
                 r.broadcastMessage(m);
+
             } catch (IOException ex) {
-                Logger.getLogger(EstatBot.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EstatBot.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
         if (askWhoFollow) {
@@ -130,46 +139,48 @@ public class EstatBot extends EstatTeam {
             System.out.println("askFollow:" + r.getName() + "->" + inf.follow);
             try {
                 r.broadcastMessage(m);
+
             } catch (IOException ex) {
-                Logger.getLogger(EstatBot.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EstatBot.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
     @Override
     void onPaint(Graphics2D g) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     void goTo(double x, double y) {
         //Codigo sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
         double a;
-        
+
         x -= r.getX();
-	y -= r.getY();
-        
+        y -= r.getY();
+
         //
-	/* Calculate the angle to the target position */
-	double angleToTarget = Math.atan2(x, y);
-	
-	/* Calculate the turn required get there */
-	double targetAngle = Utils.normalRelativeAngle(angleToTarget - r.getHeadingRadians());
-	
-	/* 
+        /* Calculate the angle to the target position */
+        double angleToTarget = Math.atan2(x, y);
+
+        /* Calculate the turn required get there */
+        double targetAngle = Utils.normalRelativeAngle(angleToTarget - r.getHeadingRadians());
+
+        /* 
 	 * The Java Hypot method is a quick way of getting the length
 	 * of a vector. Which in this case is also the distance between
 	 * our robot and the target location.
-	 */
-	double distance = Math.hypot(x, y);
-	
-	/* This is a simple method of performing set front as back */
-	double turnAngle = Math.atan(Math.tan(targetAngle));
-        
-        r.turnRightRadians(targetAngle);
-        r.ahead(Math.hypot(x, y));
+         */
+        double distance = Math.hypot(x, y);
 
-       /* r.setTurnRightRadians(Math.tan(
+        /* This is a simple method of performing set front as back */
+        double turnAngle = Math.atan(Math.tan(targetAngle));
+
+        r.setTurnRightRadians(targetAngle);
+        r.setAhead(Math.hypot(x, y));
+
+        /* r.setTurnRightRadians(Math.tan(
                 a = Math.atan2(x -= r.getX(), y -= r.getY())
                 - r.getHeadingRadians()));
         
