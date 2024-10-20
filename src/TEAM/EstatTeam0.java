@@ -29,7 +29,7 @@ public class EstatTeam0 extends EstatTeam {
         switch (fase) {
             case 0 -> {
                 r.setTurnRadarRight(360);
-                String[] team;
+                //String[] team;
                 try {
                     Message m = new Message(r.getName(), "SetLeader");
                     m.setInt(randomValue);

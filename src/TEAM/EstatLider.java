@@ -37,7 +37,6 @@ public class EstatLider extends EstatTeam {
     String currEne = "";
     int tornsContador = 0;
     Line2D lineDraw;
-    Rectangle2D.Double eneDraw;
     boolean esquivant = false;
     boolean girant = false;
 
@@ -81,6 +80,7 @@ public class EstatLider extends EstatTeam {
     @Override
     void onRobotDeath(RobotDeathEvent e) {
         if (e.getName().equals(currEne)) {
+            // s'ha mort l'enemic al qual estavem disparant, s'ha de triar un altre enemic
             //getClosestEnemy();
         }
     }
@@ -122,10 +122,11 @@ public class EstatLider extends EstatTeam {
         } else {
             double x = corners[goingTo][0];
             double y = corners[goingTo][1];
-            if ((x == r.getX() && y == r.getY()) || tornsContador == 100) {
+            if ((x == r.getX() && y == r.getY()) || tornsContador == 150) {
                 tornsContador = 0;
                 goingTo = (goingTo + 1) % 4;
                 girant = true;
+                r.setAhead(0);
             }
         }
     }
@@ -161,16 +162,27 @@ public class EstatLider extends EstatTeam {
             g.drawOval((int) (x - radius / 2), (int) (y - radius / 2), (int) radius, (int) radius);
 
             g.draw(lineDraw);
-            g.draw(eneDraw);
+            for (MapRobot e : inf.enemies) {
+                double left = e.x - 36;
+                double top = e.y - 36;
+                Rectangle2D eneDraw = new Rectangle2D.Double(left, top, 72, 72);
+                // Check if the trajectory line intersects with the enemy's bounding box
+                g.draw(eneDraw);
+            }
+            
         }
     }
 
     @Override
     void goTo(double x, double y) {
-        //double targetAngle = Utils.normalRelativeAngle(Math.atan2(x - r.getX(), y - r.getY()) - r.getHeadingRadians());
-        //r.setTurnRightRadians(targetAngle);
-        r.setTurnRightRadians(getActualAngle(x, y));
+
+        if (r.getDistanceRemaining() == 0) {
+            double targetAngle = Utils.normalRelativeAngle(Math.atan2(x - r.getX(), y - r.getY()) - r.getHeadingRadians());
+            r.setTurnRightRadians(targetAngle);
+        }
+
         if (esquivant || r.getTurnRemaining() == 0) {
+            r.setTurnRightRadians(getActualAngle(x, y));
             r.setAhead(Math.hypot(x - r.getX(), y - r.getY()));
             esquivant = false;
         }
@@ -209,14 +221,14 @@ public class EstatLider extends EstatTeam {
     double getActualAngle(double x, double y) {
         double targetAngle = Utils.normalRelativeAngle(Math.atan2(x - r.getX(), y - r.getY()) - r.getHeadingRadians());
         MapRobot rob = isEnemyOnPath(x, y);
-        if (!rob.name.equals("Aiquexoquem!!!")) {
+        if (!rob.name.equals("NoXoquemTranqui")) {
             esquivant = true;
-            double angle = Math.PI / (rob.distance * 10);
-            System.out.println(angle);
+            double angle = 0.1;
+            System.out.println(rob.distance+":" + angle);
             if (Math.abs(rob.bearing) - r.getHeading() >= 0) {
-                return targetAngle - angle;
+                return -angle;
             } else {
-                return targetAngle + angle;
+                return angle;
             }
         }
 
@@ -245,7 +257,7 @@ public class EstatLider extends EstatTeam {
         for (MapRobot e : inf.enemies) {
             double left = e.x - 31;
             double top = e.y - 31;
-            eneDraw = new Rectangle2D.Double(left, top, 62, 62);
+            Rectangle2D eneDraw = new Rectangle2D.Double(left, top, 62, 62);
             // Check if the trajectory line intersects with the enemy's bounding box
             if (trajectoryLine.intersects(eneDraw)) {
                 // Enemy is on the path
@@ -254,7 +266,7 @@ public class EstatLider extends EstatTeam {
             }
         }
         // No enemies on the path
-        return new MapRobot("Aiquexoquem!!!");
+        return new MapRobot("NoXoquemTranqui");
     }
     /*void girarRadar() {
         double angleRadar = Utils.normalRelativeAngle(r.getHeadingRadians() - r.getRadarHeadingRadians());
