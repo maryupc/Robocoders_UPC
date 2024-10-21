@@ -33,6 +33,7 @@ public abstract class EstatTeam {
     abstract void onRobotDeath(RobotDeathEvent event);
 
     abstract void onPaint(Graphics2D g);
+    abstract void onHitRobot(HitRobotEvent event);
 
     abstract void goTo(double x, double y);
 
@@ -62,4 +63,6 @@ public abstract class EstatTeam {
             inf.enemies.add(new MapRobot(e.getName(), enemyX, enemyY, e.getDistance(), e.getBearing()));
         }
     }
+
+
 }

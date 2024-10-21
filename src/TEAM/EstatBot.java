@@ -8,10 +8,12 @@ import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import robocode.HitRobotEvent;
 import robocode.MessageEvent;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
+import static robocode.util.Utils.normalRelativeAngleDegrees;
 
 /**
  *
@@ -21,6 +23,7 @@ public class EstatBot extends EstatTeam {
 
     boolean askWhoFollow = false;
     boolean sendWhoFollow = false;
+    boolean esquivant = false;
 
     @Override
     void torn() {
@@ -44,15 +47,27 @@ public class EstatBot extends EstatTeam {
 
         }
 
-        if (eneX
-                != -1) {
+        if (eneX!= -1) {
+            eneX = eneX - r.getX();
+            eneY = eneY - r.getY();
+            double bearing = Utils.normalRelativeAngle(Math.atan2(eneX, eneY) - r.getHeadingRadians());
+            double anguloEnemigo = r.getHeading() + Math.toDegrees(bearing);
+            double anguloCañon = anguloEnemigo - r.getGunHeading();
+            r.setTurnGunRight(normalRelativeAngleDegrees(anguloCañon));        
+            double anguloRadar = anguloEnemigo - r.getRadarHeading();
+            r.setTurnRadarRight(normalRelativeAngleDegrees(anguloRadar)); 
+            r.setFire(3);
             // Fer preparacions per disparar i disparar a la posicio de l'enemic
         }
     }
 
     @Override
     void onScannedRobot(ScannedRobotEvent e) {
-        // Es necessita per esquivar?
+        if(esquivant) return;
+        if(inf.closestEnemy==null || (e.getDistance() < inf.closestEnemy.getDistance() )){        
+            inf.closestEnemy = e;  
+            esquivant = true;
+        }
     }
 
     @Override
@@ -71,6 +86,7 @@ public class EstatBot extends EstatTeam {
                 case "ShootTo" -> {
                     eneX = m.x;
                     eneY = m.y;
+                    
                 }
                 case "AskFollow" -> {
                     if (m.receiver.equals(inf.sendCoords)) {
@@ -156,35 +172,39 @@ public class EstatBot extends EstatTeam {
     void goTo(double x, double y) {
         //Codigo sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
         double a;
-
         x -= r.getX();
-        y -= r.getY();
+	y -= r.getY();
+	
+	/* Calculate the angle to the target position*/
+	double angleToTarget = Math.atan2(x, y);
+	
+	/* Calculate the turn required get there */
+	double targetAngle = Utils.normalRelativeAngle(angleToTarget - r.getHeadingRadians());
+	
+	if(esquivant){
+            if (inf.closestEnemy.getDistance() < 200 && inf.closestEnemy.getDistance() >= 100)
+            {
+                
+                if (inf.closestEnemy.getBearing() >= 0) {
+                    r.turnLeft(Utils.normalRelativeAngleDegrees(30 + (r.getGunHeading()  - r.getRadarHeading())));  // Si el enemigo está a la derecha, gira a la izquierda
+                } else {
+                    r.turnRight(Utils.normalRelativeAngleDegrees(30 + (r.getGunHeading() - r.getRadarHeading()))); 
+                }
+               r.ahead(20);
+            }else if( inf.closestEnemy.getDistance() < 20){
+                r.back(20);
+            
+            }
+            
+            esquivant = false;
+        }else{
+            r.setTurnRightRadians(targetAngle);
+            r.setAhead(Math.hypot(x, y));
+        } 
+    }
 
-        //
-        /* Calculate the angle to the target position */
-        double angleToTarget = Math.atan2(x, y);
-
-        /* Calculate the turn required get there */
-        double targetAngle = Utils.normalRelativeAngle(angleToTarget - r.getHeadingRadians());
-
-        /* 
-	 * The Java Hypot method is a quick way of getting the length
-	 * of a vector. Which in this case is also the distance between
-	 * our robot and the target location.
-         */
-        double distance = Math.hypot(x, y);
-
-        /* This is a simple method of performing set front as back */
-        double turnAngle = Math.atan(Math.tan(targetAngle));
-
-        r.setTurnRightRadians(targetAngle);
-        r.setAhead(Math.hypot(x, y));
-
-        /* r.setTurnRightRadians(Math.tan(
-                a = Math.atan2(x -= r.getX(), y -= r.getY())
-                - r.getHeadingRadians()));
-        
-        r.setAhead(Math.hypot(x, y) * Math.cos(a));
-        //if (Math.cos(a) > 0) direccio = 0;*/
+    @Override
+    void onHitRobot(HitRobotEvent event) {
+        r.back(20);
     }
 }

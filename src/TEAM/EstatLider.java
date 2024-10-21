@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import robocode.HitRobotEvent;
 import robocode.MessageEvent;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
@@ -33,37 +34,35 @@ public class EstatLider extends EstatTeam {
     double height;
     double[][] corners;
     boolean sendWhoFollow = true;
-    List<ScannedRobotEvent> robs = new ArrayList();
     String currEne = "";
     int tornsContador = 0;
     Line2D lineDraw;
     boolean esquivant = false;
     boolean girant = false;
+    boolean girRadar = false;
 
     @Override
     void torn() {
-        r.setTurnRadarRight(360);
-        r.setTurnGunRight(360);
+        //r.setTurnRadarRight(360);
+        //r.setTurnGunRight(360);
         gestioMorts();
         chooseCorner();
         sendCoords();
+       // shotToEne();
+        
         //  esquiva();
-        //girarRadar();
+        girarRadar();
         goTo(corners[goingTo][0], corners[goingTo][1]);
-        tornsContador++;
+        //tornsContador++;
     }
 
     @Override
     void onScannedRobot(ScannedRobotEvent e) {
-        robs.add(e);
-        if (!r.isTeammate(e.getName())) {
-            updateEnemy(e);
-        }
-        /*if((inf.closestEnemy==null || (e.getDistance() < inf.closestEnemy.getDistance() )) && !r.isTeammate(e.getName())){        
+        if(esquivant) return;
+        if(inf.closestEnemy==null || (e.getDistance() < inf.closestEnemy.getDistance() )){        
             inf.closestEnemy = e;  
-            //r.setAdjustRadarForRobotTurn(true);
-            inf.encontrado = true;
-        }*/
+            esquivant = true;
+        }
     }
 
     @Override
@@ -80,6 +79,7 @@ public class EstatLider extends EstatTeam {
     @Override
     void onRobotDeath(RobotDeathEvent e) {
         if (e.getName().equals(currEne)) {
+            inf.enemies.remove(currEne);
             // s'ha mort l'enemic al qual estavem disparant, s'ha de triar un altre enemic
             //getClosestEnemy();
         }
@@ -122,11 +122,11 @@ public class EstatLider extends EstatTeam {
         } else {
             double x = corners[goingTo][0];
             double y = corners[goingTo][1];
-            if ((x == r.getX() && y == r.getY()) || tornsContador == 150) {
-                tornsContador = 0;
+            double distance1 = distance(r.getX(), r.getY(), x, y);
+            if (Math.abs(distance1) <= 0.1) {
+                //tornsContador = 0;
                 goingTo = (goingTo + 1) % 4;
                 girant = true;
-                r.setAhead(0);
             }
         }
     }
@@ -176,14 +176,15 @@ public class EstatLider extends EstatTeam {
     @Override
     void goTo(double x, double y) {
 
-        if (r.getDistanceRemaining() == 0) {
+      /*  if (r.getDistanceRemaining() == 0) {
             double targetAngle = Utils.normalRelativeAngle(Math.atan2(x - r.getX(), y - r.getY()) - r.getHeadingRadians());
-            r.setTurnRightRadians(targetAngle);
+            r.turnRightRadians(targetAngle);
         }
 
         if (esquivant || r.getTurnRemaining() == 0) {
-            r.setTurnRightRadians(getActualAngle(x, y));
+            r.turnRightRadians(getActualAngle(x, y));
             r.setAhead(Math.hypot(x - r.getX(), y - r.getY()));
+            
             esquivant = false;
         }
         if (r.getTurnRemaining() > 45) {
@@ -201,21 +202,41 @@ public class EstatLider extends EstatTeam {
             esquivant = false;
             
         }*/
- /*       
+        
         //Codigo sacado de la pagina robocode ---- https://robowiki.net/wiki/GoTo ------
         double a;
         x -= r.getX();
 	y -= r.getY();
 	
-	/* Calculate the angle to the target position /
-	double angleToTarget = Math.atan2(x, y);
+	/* Calculate the angle to the target position*/
+      double angleToTarget = Math.atan2(x, y);
+
 	
-	/* Calculate the turn required get there /
+	/* Calculate the turn required get there */
 	double targetAngle = Utils.normalRelativeAngle(angleToTarget - r.getHeadingRadians());
-	
-	        
-        r.turnRightRadians(targetAngle);
-        r.setAhead(Math.hypot(x, y));*/
+		//double turnAngle = Math.atan(Math.tan(targetAngle));
+
+	if(esquivant){
+            if (inf.closestEnemy.getDistance() < 200 && inf.closestEnemy.getDistance() >= 100)
+            {
+                
+                if (inf.closestEnemy.getBearing() >= 0) {
+                    r.turnLeft(Utils.normalRelativeAngleDegrees(40 + (r.getGunHeading()  - r.getRadarHeading())));  // Si el enemigo está a la derecha, gira a la izquierda
+                } else {
+                    r.turnRight(Utils.normalRelativeAngleDegrees(40 + (r.getGunHeading() - r.getRadarHeading()))); 
+                }
+               r.ahead(20);
+            }else if (inf.closestEnemy.getDistance() < 20) {
+                r.back(20);
+            }
+            
+            esquivant = false;
+        }else{
+            if(Math.abs(targetAngle) >= 0.1)
+                r.turnRightRadians(targetAngle);
+            r.setAhead(Math.hypot(x, y));
+        }        
+
     }
 
     double getActualAngle(double x, double y) {
@@ -223,6 +244,7 @@ public class EstatLider extends EstatTeam {
         MapRobot rob = isEnemyOnPath(x, y);
         if (!rob.name.equals("NoXoquemTranqui")) {
             esquivant = true;
+            System.out.println("esquivo");
             double angle = 0.1;
             System.out.println(rob.distance+":" + angle);
             if (Math.abs(rob.bearing) - r.getHeading() >= 0) {
@@ -268,18 +290,39 @@ public class EstatLider extends EstatTeam {
         // No enemies on the path
         return new MapRobot("NoXoquemTranqui");
     }
-    /*void girarRadar() {
+    void girarRadar() {
         double angleRadar = Utils.normalRelativeAngle(r.getHeadingRadians() - r.getRadarHeadingRadians());
         r.setTurnRadarRightRadians(angleRadar);
         if (Math.abs(angleRadar) <= 0.01){
            if(girRadar){
-                r.setTurnRadarRightRadians(0);
+                r.setTurnRadarRight(10);
                 girRadar = false;
             }else{
                 girRadar = true;
-                r.setTurnRadarLeftRadians(10);
+                r.setTurnRadarLeft(10);
             } 
             
         }
-    }*/
+    }
+
+    @Override
+    void onHitRobot(HitRobotEvent event) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void shotToEne() {
+        if(inf.enemies !=null ){
+            
+            Message m = new Message(inf.enemies.get(0).name, "ShootTo");
+            m.setCoords(inf.enemies.get(0).x, inf.enemies.get(0).y);
+            currEne = inf.enemies.get(0).name;
+            try {
+                r.broadcastMessage(m);
+
+            } catch (IOException ex) {
+                Logger.getLogger(EstatBot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }
 }

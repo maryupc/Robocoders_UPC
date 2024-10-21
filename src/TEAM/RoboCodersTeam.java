@@ -68,4 +68,9 @@ public class RoboCodersTeam extends TeamRobot {
     public void onRobotDeath(RobotDeathEvent event) {
         estat.onRobotDeath(event);
     }
+    
+    @Override
+    public void onHitRobot(HitRobotEvent event){
+        estat.onHitRobot(event);
+    }
 }
