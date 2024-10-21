@@ -10,14 +10,24 @@ import static java.lang.Math.*;
 import robocode.*;
 
 /**
- *
+ * Classe per la Fase 0: Escull la cantonada que tingui el enemic mes lluny i la guarda a la informacio del robot
  * @author maryx
  */
 public class Estat0 extends Estat {
-
-    private int fase = 0;
-    private List<ScannedRobotEvent> enemy = new ArrayList<>();
-    private int ticks = 0;
+    /**
+     * fase: si es igual a 0, es gira el radar buscant els enemics
+        si es igual a 1, s'executa la funcio que busca la millor cantonada
+     */
+    public int fase = 0;
+    /**
+     * Llista amb els enemics per saber les seves posicions
+     */
+    public List<ScannedRobotEvent> enemy = new ArrayList<>();
+    /**
+     * contador de torns per fer el gir del radar molt eficient
+     * (si el radar i la torreta giren junts fan una volta sencera cada 5 ticks, sino, la fan cada 8)
+     */
+    public int ticks = 0;
 
     @Override
     void torn() {
@@ -45,12 +55,21 @@ public class Estat0 extends Estat {
         }
     }
 
+    /**
+     * Quan s'escaneja un robot, ens guardem el event a la llista
+     * @param e afegit a enemy(list) 
+     */
     @Override
-    void onScannedRobot(ScannedRobotEvent e) {
+    public void onScannedRobot(ScannedRobotEvent e) {
         enemy.add(e);
     }
 
-    private void bestCorner() {
+    /**
+     * Definim una array amb les 4 cantonades i iterem la llista d'enemics buscant per cada cantonada a quina distancia esta el enemic que te mes proper
+     * (per cada enemic iterem per cada cantonada).
+     * Aleshores mirem quina es la cantonada amb la distancia a un enemic mes gran,  i guardem les coordenades d'aquesta a la informacio x i y del estat (inf)
+     */
+    public void bestCorner() {
         double[][] corners = {
             {18, 18},
             {r.getBattleFieldWidth() - 18, 18},

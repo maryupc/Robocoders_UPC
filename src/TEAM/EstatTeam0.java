@@ -14,12 +14,15 @@ import robocode.*;
 import robocode.ScannedRobotEvent;
 
 /**
- *
+ * Classe handshake, s'assignen els rols de cada robot
  * @author llucc
  */
 public class EstatTeam0 extends EstatTeam {
 
-    int fase = 0;
+    /**
+     * Indica la fase en la que es troba el programa
+     */
+    public int fase = 0;
     int randomValue = new Random().nextInt();
     List<Message> ms = new ArrayList();
     List<ScannedRobotEvent> robots = new ArrayList();
@@ -29,7 +32,6 @@ public class EstatTeam0 extends EstatTeam {
         switch (fase) {
             case 0 -> {
                 r.setTurnRadarRight(360);
-                //String[] team;
                 try {
                     Message m = new Message(r.getName(), "SetLeader");
                     m.setInt(randomValue);
@@ -79,7 +81,10 @@ public class EstatTeam0 extends EstatTeam {
                     }
                 }
             }
-            case 4 -> {
+            /**
+             * Envia un missatge 
+             */
+            case 4 -> { 
                 for (Message m : ms) {
                     if (m.type.equals("SetPositions")) {
                         if (!inf.findAlly(m.receiver)){

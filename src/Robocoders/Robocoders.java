@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import robocode.*;
 
 /**
- *
+ * Classe principal del Robot timidin, aqui s'agafen tots els events i es gestionen, i hi ha el bucle principal del robot
  * @author maryx
  */
 public class Robocoders extends AdvancedRobot {
@@ -45,7 +45,12 @@ public class Robocoders extends AdvancedRobot {
     
     }
     
-
+/**
+ * Funcio utilitzada per canviar els estats quan s'acaba cada fase
+ * -> Fase 0 quan no hi ha cap estat inicialitzat
+ * -> Fase 1 quan l'estat0 ja ha calculat la cantonada ideal
+ * -> Fase 2 quan l'estat1 ha acabat
+ */
     public void setEstat() {
         if (estat == null) {
             estat = new Estat0();
