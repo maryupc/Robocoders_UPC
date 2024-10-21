@@ -27,12 +27,10 @@ public class EstatBot extends EstatTeam {
 
     @Override
     void torn() {
-        //r.setMaxVelocity(6);
         gestioMorts();
         if (inf.pos != 5) {
             sendCoords();
         }
-        //System.out.println(goX + ":" + goY);
         if (goX != -1) {
             // Anar a la ultima posicio coneguda del robot al que seguim
             if (distance(r.getX(), r.getY(), goX, goY) > 100) {
@@ -57,7 +55,6 @@ public class EstatBot extends EstatTeam {
             double anguloRadar = anguloEnemigo - r.getRadarHeading();
             r.setTurnRadarRight(normalRelativeAngleDegrees(anguloRadar)); 
             r.setFire(3);
-            // Fer preparacions per disparar i disparar a la posicio de l'enemic
         }
     }
 
@@ -186,20 +183,23 @@ public class EstatBot extends EstatTeam {
             {
                 
                 if (inf.closestEnemy.getBearing() >= 0) {
-                    r.turnLeft(Utils.normalRelativeAngleDegrees(30 + (r.getGunHeading()  - r.getRadarHeading())));  // Si el enemigo está a la derecha, gira a la izquierda
+                    r.turnLeft(Utils.normalRelativeAngleDegrees(45 + (r.getGunHeading()  - r.getRadarHeading())));  // Si el enemigo está a la derecha, gira a la izquierda
                 } else {
-                    r.turnRight(Utils.normalRelativeAngleDegrees(30 + (r.getGunHeading() - r.getRadarHeading()))); 
+                    r.turnRight(Utils.normalRelativeAngleDegrees(45 + (r.getGunHeading() - r.getRadarHeading()))); 
                 }
-               r.ahead(20);
+               r.ahead(30);
             }else if( inf.closestEnemy.getDistance() < 20){
-                r.back(20);
+                r.back(55);
+                r.turnRight(Utils.normalRelativeAngleDegrees(99 + (r.getGunHeading() - r.getRadarHeading()))); 
             
             }
             
             esquivant = false;
         }else{
+          if(Math.abs(targetAngle) >= 0.1){
             r.setTurnRightRadians(targetAngle);
             r.setAhead(Math.hypot(x, y));
+          }
         } 
     }
 

@@ -12,7 +12,7 @@ import static robocode.util.Utils.normalRelativeAngle;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 
 /**
- *
+ *Classe per la Fase 2: Robot ja en la cantonada comença a disparar al primer enemic detectat 
  * @author maryx
  */
 
@@ -41,6 +41,10 @@ public class Estat2 extends Estat {
 
     }
     
+    /**
+     * Funció que serveix per a disparar als enemics, quan es detecta a 1, calcula l'angle.
+     * Centra el canyo cap l'enemic i comença a disparar segons la distancia que es trobi.
+    */
     private void dispara(){
         if (inf.closestEnemy == null) return;
         double anguloEnemigo = r.getHeading() + inf.closestEnemy.getBearing();
@@ -63,7 +67,9 @@ public class Estat2 extends Estat {
 
     }
 
-    //Si muere el enemigo al que estabamos disparando, reseteamos la info. 
+     /**
+     * Event que si mor l'enemic al que s'acatava, es resteja la info del enemic.
+     */
     @Override
     void onRobotDeath(RobotDeathEvent e) {
         if(e.getName().equals(inf.closestEnemy.getName())){
